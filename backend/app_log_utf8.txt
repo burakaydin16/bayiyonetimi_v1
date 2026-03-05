@@ -1,0 +1,9 @@
+C:\Users\CANSU AYDIN\Desktop\uygulama\bayiyonetimi_v1\backend\Properties\launchSettings.json içindeki başlatma ayarları kullanılıyor...
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (99ms) [Parameters=[], CommandType='Text', CommandTimeout='60']
+      SELECT EXISTS (
+    SELECT 1 FROM pg_catalog.pg_class c
+    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND
+          c.relname='__EFMigrationsHistory'
+)
