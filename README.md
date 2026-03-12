@@ -22,6 +22,11 @@ Projeyi Docker üzerinde çalıştırmak için:
     docker run -p 8080:80 bayi-yonetimi-ui
     ```
 Uygulama `http://localhost:8080` adresinde çalışacaktır.
+-----------------------------------------------------------------
+Uygulama canlı ortamda : 'https://bayiyonetimi-frontend-res2og-a4b029-20-199-138-36.traefik.me/' adresinde çalışmaktadır.
+-----------------------------------------------------------------
+backend adresi swagger : 'https://bayiyonetimi-backend-ixbgl1-de5584-20-199-138-36.traefik.me/swagger/index.html'
+-----------------------------------------------------------------
 
 ## Dokploy / GitHub Deployment
 
