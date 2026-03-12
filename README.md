@@ -1,4 +1,4 @@
-# Su Dağıtım ve Depozito Takip Sistemi
+# Su Dağıtım ve Depozito Takip Sistemi (UI)
 
 Bu proje, su dağıtım firmaları için stok, cari, depozito (palet, damacana) ve sevkiyat takibi yapmak amacıyla geliştirilmiştir.
 
@@ -6,82 +6,8 @@ Bu proje, su dağıtım firmaları için stok, cari, depozito (palet, damacana) 
 
 1.  Projeyi klonlayın.
 2.  `npm install` komutu ile bağımlılıkları yükleyin.
-3.  Supabase projesi oluşturun ve aşağıdaki veritabanı şemasını uygulayın.
-4.  `.env` dosyasını oluşturun ve Supabase bilgilerinizi girin:
-
-```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
-```
-
-5.  `npm run dev` ile projeyi başlatın.
-
-## Veritabanı Modeli (Supabase / PostgreSQL)
-
-Aşağıdaki SQL komutlarını Supabase SQL Editöründe çalıştırarak gerekli tabloları oluşturabilirsiniz.
-
-```sql
--- 1. Ürünler Tablosu (Su, Damacana, Palet vb.)
-create table products (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  name text not null,
-  type text not null, -- 'water', 'deposit', 'other'
-  price numeric default 0,
-  stock integer default 0,
-  deposit_price numeric default 0, -- Eğer ürünün kendisi depozito ise fiyatı
-  linked_deposit_id uuid references products(id) -- Su ürünü ise, hangi boş kaba karşılık geliyor?
-);
-
--- 2. Müşteriler (Bayiler) Tablosu
-create table customers (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  name text not null,
-  type text default 'dealer', -- 'dealer', 'individual'
-  phone text,
-  address text,
-  cash_balance numeric default 0 -- Para bakiyesi (Alacak/Borç)
-);
-
--- 3. Depozito Defteri (Hangi müşteride hangi üründen ne kadar emanet var?)
-create table deposit_ledgers (
-  id uuid default gen_random_uuid() primary key,
-  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  customer_id uuid references customers(id) not null,
-  product_id uuid references products(id) not null,
-  balance integer default 0, -- Pozitif: Müşteride var (Bize borçlu), Negatif: Bizde var (Nadiren)
-  unique(customer_id, product_id)
-);
-
--- 4. İşlemler / Fişler (Satış, İade, Alış)
-create table transactions (
-  id uuid default gen_random_uuid() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  date timestamp with time zone default timezone('utc'::text, now()) not null,
-  customer_id uuid references customers(id), -- Null ise stok sayımı veya genel işlem olabilir
-  type text not null, -- 'sale', 'return', 'purchase', 'adjustment'
-  notes text,
-  total_amount numeric default 0
-);
-
--- 5. İşlem Kalemleri
-create table transaction_items (
-  id uuid default gen_random_uuid() primary key,
-  transaction_id uuid references transactions(id) on delete cascade not null,
-  product_id uuid references products(id) not null,
-  quantity integer not null,
-  unit_price numeric default 0,
-  item_type text not null -- 'StokGirisi', 'Gonderilen', 'IadeAlinan'
-);
-```
-
-## Proje Yapısı
-
--   `/pages`: Uygulama sayfaları (Dashboard, Stok, Cari, vb.)
--   `/components`: Yeniden kullanılabilir bileşenler
--   `/services`: Veri erişim katmanı (Supabase entegrasyonu)
--   `/types`: TypeScript tip tanımları
+3.  `.env` dosyasını kontrol edin.
+4.  `npm run dev` ile projeyi başlatın.
 
 ## Özellikler
 
@@ -89,5 +15,18 @@ create table transaction_items (
 -   **Cari Hesap:** Müşteri bazlı para ve depozito (emanet) bakiyesi.
 -   **Hareket İşleme:** Satış, iade ve stok giriş/çıkış işlemleri.
 -   **Raporlama:** Özet grafikler ve listeler.
+
+## Teknoloji
+
+-   React 19
+-   TypeScript
+-   Vite
+-   Tailwind CSS
+-   Lucide React (İkonlar)
+-   Recharts (Grafikler)
+
+## API Bağlantısı
+
+Uygulama, özel bir backend servisine bağlanır. API URL'i `services/apiService.ts` dosyasında tanımlıdır.
 
 Burak Aydın

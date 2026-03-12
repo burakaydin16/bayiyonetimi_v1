@@ -1,5 +1,5 @@
 
-const API_URL = 'http://localhost:53509/api'; // Backend URL from launchSettings.json
+const API_URL = 'https://bayiyonetimi-backend-ixbgl1-de5584-20-199-138-36.traefik.me/api'; // Updated for new Traefik URL
 
 export const api = {
   async post(endpoint: string, data: any) {

@@ -1,5 +1,5 @@
 {
-  "name": "copy-of-su-dağıtım-ve-depozito-takip-sistemi",
+  "name": "bayi-yonetimi-ui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
-    "@supabase/supabase-js": "2",
     "@tailwindcss/vite": "^4.2.1",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",
