@@ -1,5 +1,5 @@
 
-const API_URL = 'https://bayiyonetimi-backend-ixbgl1-de5584-20-199-138-36.traefik.me/api'; // Updated for new Traefik URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://bayiyonetimi-backend-ixbgl1-de5584-20-199-138-36.traefik.me/api';
 
 export const api = {
   async post(endpoint: string, data: any) {
