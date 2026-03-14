@@ -25,7 +25,7 @@ Uygulama `http://localhost:8080` adresinde çalışacaktır.
 -----------------------------------------------------------------
 Uygulama canlı ortamda : 'https://nisanaydin.com.tr/' adresinde çalışmaktadır.
 -----------------------------------------------------------------
-backend adresi swagger : 'https://nisanaydin.com.tr/swagger/index.html'
+backend adresi swagger : 'https://api.nisanaydin.com.tr/swagger/index.html'
 -----------------------------------------------------------------
 
 ## Dokploy / GitHub Deployment

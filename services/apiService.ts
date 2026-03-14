@@ -1,5 +1,5 @@
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://nisanaydin.com.tr/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://api.nisanaydin.com.tr/api';
 
 export const api = {
   async post(endpoint: string, data: any) {
