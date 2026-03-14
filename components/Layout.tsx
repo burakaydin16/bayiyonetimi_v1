@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings } from 'lucide-react';
+import { authService } from '../services/authService';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,12 +11,16 @@ interface LayoutProps {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigate, onLogout, tenantName }) => {
+  const user = authService.getUser();
+  const isAdmin = user?.role === 'Admin' || user?.permissions === '*';
+
   const navItems = [
     { id: 'dashboard', label: 'Özet', icon: LayoutDashboard },
     { id: 'inventory', label: 'Stok & Ürünler', icon: Package },
     { id: 'customers', label: 'Bayiler & Cari', icon: Users },
     { id: 'transactions', label: 'Hareket Ekle', icon: ArrowRightLeft },
     { id: 'reports', label: 'Raporlar', icon: PieChart },
+    ...(isAdmin ? [{ id: 'users', label: 'Kullanıcılar', icon: Settings }] : []),
     { id: 'settings', label: 'Ayarlar', icon: Settings },
   ];
 

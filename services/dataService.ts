@@ -94,5 +94,28 @@ export const DataService = {
             console.error('Error cancelling transaction:', error);
             throw error;
         }
+    },
+
+    // --- Users ---
+    getUsers: async (): Promise<any[]> => {
+        try {
+            return await api.get('/users');
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
+    },
+
+    saveUser: async (user: any): Promise<any> => {
+        if (user.id) {
+            // Update permissions only for now as per controller logic
+            return await api.put(`/users/${user.id}/permissions`, { permissions: user.permissions });
+        } else {
+            return await api.post('/users', user);
+        }
+    },
+
+    deleteUser: async (id: string): Promise<void> => {
+        await api.delete(`/users/${id}`);
     }
 };

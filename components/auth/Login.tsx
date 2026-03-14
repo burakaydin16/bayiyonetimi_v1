@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { authService } from '../../services/authService';
-import { LogIn, UserPlus, Building2, Mail, Lock } from 'lucide-react';
+import { LogIn, UserPlus, Hash, Mail, Lock } from 'lucide-react';
 
 interface LoginProps {
     onLoginSuccess: () => void;
@@ -9,7 +9,7 @@ interface LoginProps {
 }
 
 export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onSwitchToRegister }) => {
-    const [tenantName, setTenantName] = useState('');
+    const [tenantRef, setTenantRef] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -21,7 +21,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onSwitchToRegister
         setLoading(true);
 
         try {
-            await authService.login(tenantName, email, password);
+            await authService.login(tenantRef, email, password);
             onLoginSuccess();
         } catch (err: any) {
             setError(err.message || 'Giriş yapılamadı. Bilgilerinizi kontrol edin.');
@@ -49,29 +49,31 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onSwitchToRegister
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1 uppercase tracking-wider">Bayi / Şirket Adı</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1 uppercase tracking-wider">Firma ID (Referans Kodu)</label>
                         <div className="relative">
-                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <Hash className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
+                                id="tenantRef"
                                 type="text"
                                 required
                                 className="w-full bg-gray-50 border-2 border-gray-200 rounded-xl py-3.5 pl-12 pr-4 text-gray-900 font-medium placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                                placeholder="Örn: Özsu Dağıtım"
-                                value={tenantName}
-                                onChange={(e) => setTenantName(e.target.value)}
+                                placeholder="Örn: REF-123456"
+                                value={tenantRef}
+                                onChange={(e) => setTenantRef(e.target.value)}
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1 uppercase tracking-wider">Kullanıcı Adı</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2 ml-1 uppercase tracking-wider">E-Posta</label>
                         <div className="relative">
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
-                                type="text"
+                                id="email"
+                                type="email"
                                 required
                                 className="w-full bg-gray-50 border-2 border-gray-200 rounded-xl py-3.5 pl-12 pr-4 text-gray-900 font-medium placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                                placeholder="Kullanıcı adınızı yazın"
+                                placeholder="ornek@firma.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
@@ -83,6 +85,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess, onSwitchToRegister
                         <div className="relative">
                             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
                             <input
+                                id="password"
                                 type="password"
                                 required
                                 className="w-full bg-gray-50 border-2 border-gray-200 rounded-xl py-3.5 pl-12 pr-4 text-gray-900 font-medium placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:bg-white transition-all"

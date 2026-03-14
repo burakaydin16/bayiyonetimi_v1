@@ -5,6 +5,7 @@ import { Inventory } from './pages/Inventory';
 import { Customers } from './pages/Customers';
 import { Transactions } from './pages/Transactions';
 import { Reports } from './pages/Reports';
+import { Users } from './pages/Users';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { Settings } from './pages/Settings';
@@ -16,13 +17,8 @@ const App: React.FC = () => {
   const [page, setPage] = useState('dashboard');
 
   useEffect(() => {
-    // Check if token still exists on mount
     setIsAuthenticated(authService.isAuthenticated());
   }, []);
-
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true);
-  };
 
   const handleLogout = () => {
     authService.logout();
@@ -34,7 +30,7 @@ const App: React.FC = () => {
     if (authView === 'login') {
       return (
         <Login
-          onLoginSuccess={handleLoginSuccess}
+          onLoginSuccess={() => setIsAuthenticated(true)}
           onSwitchToRegister={() => setAuthView('register')}
         />
       );
@@ -50,20 +46,14 @@ const App: React.FC = () => {
 
   const renderPage = () => {
     switch (page) {
-      case 'dashboard':
-        return <Dashboard onNavigate={setPage} />;
-      case 'inventory':
-        return <Inventory />;
-      case 'customers':
-        return <Customers />;
-      case 'transactions':
-        return <Transactions />;
-      case 'reports':
-        return <Reports />;
-      case 'settings':
-        return <Settings />;
-      default:
-        return <Dashboard onNavigate={setPage} />;
+      case 'dashboard': return <Dashboard onNavigate={setPage} />;
+      case 'inventory': return <Inventory />;
+      case 'customers': return <Customers />;
+      case 'transactions': return <Transactions />;
+      case 'reports': return <Reports />;
+      case 'users': return <Users />;
+      case 'settings': return <Settings />;
+      default: return <Dashboard onNavigate={setPage} />;
     }
   };
 
@@ -72,7 +62,7 @@ const App: React.FC = () => {
       currentPage={page}
       onNavigate={setPage}
       onLogout={handleLogout}
-      tenantName={localStorage.getItem('tenantName') || ''}
+      tenantName={localStorage.getItem('tenantRef') || ''}
     >
       {renderPage()}
     </Layout>
