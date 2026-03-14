@@ -23,9 +23,9 @@ Projeyi Docker üzerinde çalıştırmak için:
     ```
 Uygulama `http://localhost:8080` adresinde çalışacaktır.
 -----------------------------------------------------------------
-Uygulama canlı ortamda : 'https://bayiyonetimi-frontend-res2og-a4b029-20-199-138-36.traefik.me/' adresinde çalışmaktadır.
+Uygulama canlı ortamda : 'https://nisanaydin.com.tr/' adresinde çalışmaktadır.
 -----------------------------------------------------------------
-backend adresi swagger : 'https://bayiyonetimi-backend-ixbgl1-de5584-20-199-138-36.traefik.me/swagger/index.html'
+backend adresi swagger : 'https://nisanaydin.com.tr/swagger/index.html'
 -----------------------------------------------------------------
 
 ## Dokploy / GitHub Deployment
