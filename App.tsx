@@ -7,6 +7,7 @@ import { Transactions } from './pages/Transactions';
 import { Reports } from './pages/Reports';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
+import { Settings } from './pages/Settings';
 import { authService } from './services/authService';
 
 const App: React.FC = () => {
@@ -59,6 +60,8 @@ const App: React.FC = () => {
         return <Transactions />;
       case 'reports':
         return <Reports />;
+      case 'settings':
+        return <Settings />;
       default:
         return <Dashboard onNavigate={setPage} />;
     }

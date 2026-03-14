@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +16,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
     { id: 'customers', label: 'Bayiler & Cari', icon: Users },
     { id: 'transactions', label: 'Hareket Ekle', icon: ArrowRightLeft },
     { id: 'reports', label: 'Raporlar', icon: PieChart },
+    { id: 'settings', label: 'Ayarlar', icon: Settings },
   ];
 
   return (

@@ -22,5 +22,9 @@ export const authService = {
 
     isAuthenticated: () => {
         return !!localStorage.getItem('token');
+    },
+
+    changePassword: async (oldPassword: string, newPassword: string) => {
+        return await api.post('/auth/change-password', { oldPassword, newPassword });
     }
 };
