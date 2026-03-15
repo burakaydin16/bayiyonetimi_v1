@@ -14,35 +14,40 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
   const [authView, setAuthView] = useState<'login' | 'register'>('login');
   const [page, setPage] = useState('dashboard');
+  const [isInit, setIsInit] = useState(false);
 
   useEffect(() => {
-    // Check for impersonation token in URL
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const tRef = params.get('tenant_ref');
-    const tName = params.get('tenant_name');
-    const uData = params.get('user');
-    const lUrl = params.get('logo_url');
+    const init = async () => {
+      // Check for impersonation token in URL
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const tRef = params.get('tenant_ref');
+      const tName = params.get('tenant_name');
+      const uData = params.get('user');
+      const lUrl = params.get('logo_url');
 
-    if (token && tRef) {
-      try {
-        authService.externalLogin({
-          token,
-          tenant_ref: tRef,
-          tenant_name: tName || '',
-          user: uData ? JSON.parse(decodeURIComponent(uData)) : null,
-          logo_url: lUrl || undefined
-        });
-        // Clear URL params
-        window.history.replaceState({}, document.title, "/");
-        setIsAuthenticated(true);
-      } catch (e) {
-        console.error("External login error:", e);
+      if (token && tRef) {
+        try {
+          authService.externalLogin({
+            token,
+            tenant_ref: tRef,
+            tenant_name: tName || '',
+            user: uData ? JSON.parse(uData) : null,
+            logo_url: lUrl || undefined
+          });
+          // Clear URL params
+          window.history.replaceState({}, document.title, "/");
+          setIsAuthenticated(true);
+        } catch (e) {
+          console.error("External login error:", e);
+        }
+      } else {
         setIsAuthenticated(authService.isAuthenticated());
       }
-    } else {
-      setIsAuthenticated(authService.isAuthenticated());
-    }
+      setIsInit(true);
+    };
+
+    init();
   }, []);
 
   const handleLogout = () => {
@@ -50,6 +55,12 @@ const App: React.FC = () => {
     setIsAuthenticated(false);
     setAuthView('login');
   };
+
+  if (!isInit) {
+    return <div className="min-h-screen bg-[#FBFBFE] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0071E3]"></div>
+    </div>;
+  }
 
   if (!isAuthenticated) {
     if (authView === 'login') {

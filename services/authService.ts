@@ -21,6 +21,9 @@ export const authService = {
     },
 
     externalLogin: (data: { token: string, tenant_name: string, tenant_ref: string, user: any, logo_url?: string }) => {
+        // Clear everything first to ensure fresh session
+        authService.logout();
+
         if (data.token) {
             localStorage.setItem('token', data.token);
             localStorage.setItem('tenantRef', data.tenant_ref);
