@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, ChevronLeft, ChevronRight, LogOut, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, ChevronLeft, ChevronRight, LogOut, User as UserIcon, ChevronsLeft, ChevronsRight } from 'lucide-react';
 import { authService } from '../services/authService';
 
 interface LayoutProps {
@@ -35,18 +35,26 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
       <aside
         className={`${isSidebarCollapsed ? 'w-20' : 'w-64'} bg-white flex-shrink-0 hidden md:flex flex-col border-r border-[#E5E5E7] transition-all duration-400 ease-in-out relative z-50`}
       >
-        {/* Header Area */}
-        <div className="h-20 flex items-center px-6 border-b border-[#F5F5F7]">
+        {/* Header Area & Collapse Button */}
+        <div className="h-20 flex items-center justify-between px-5 border-b border-[#F5F5F7]">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="min-w-[36px] h-9 bg-[#0071E3] rounded-xl flex items-center justify-center shadow-md shadow-blue-200">
+            <div className="min-w-[36px] h-9 bg-[#0071E3] rounded-xl flex items-center justify-center">
               <Droplets className="w-5 h-5 text-white" />
             </div>
             {!isSidebarCollapsed && (
-              <span className="font-bold text-[17px] tracking-tight whitespace-nowrap animate-in fade-in duration-500">
+              <span className="font-bold text-[16px] tracking-tight whitespace-nowrap animate-in fade-in duration-500">
                 {tenantName}
               </span>
             )}
           </div>
+
+          <button
+            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+            className="w-8 h-8 flex items-center justify-center text-[#86868B] hover:bg-[#F5F5F7] border border-[#E5E5E7] rounded-lg transition-all"
+            title={isSidebarCollapsed ? "Genişlet" : "Daralt"}
+          >
+            {isSidebarCollapsed ? <ChevronsRight size={16} /> : <ChevronsLeft size={16} />}
+          </button>
         </div>
 
         {/* Navigation */}
@@ -76,15 +84,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         </nav>
 
         {/* Sidebar Footer / Collapse Toggle */}
-        <div className="p-4 border-t border-[#F5F5F7]">
-          <button
-            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="w-full h-10 flex items-center justify-center text-[#86868B] hover:bg-[#F5F5F7] rounded-xl transition-all"
-            title={isSidebarCollapsed ? "Genişlet" : "Daralt"}
-          >
-            {isSidebarCollapsed ? <ChevronRight size={18} /> : <div className="flex items-center gap-2 text-xs font-medium"><ChevronLeft size={18} /> Daralt</div>}
-          </button>
-        </div>
+
       </aside>
 
       {/* Main Content Area */}
@@ -92,14 +92,14 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         {/* Modern Navbar */}
         <header className="h-20 bg-white/70 backdrop-blur-xl sticky top-0 z-40 flex items-center justify-between px-8 border-b border-[#E5E5E7]/50">
           <div className="flex items-center gap-4">
-            <div className="bg-[#F5F5F7] px-3 py-1.5 rounded-full">
+            <div className="flex flex-col">
+              <h2 className="text-[18px] font-bold text-[#1D1D1F] tracking-tight leading-none mb-1">
+                {tenantName}
+              </h2>
               <span className="text-[11px] font-bold text-[#86868B] uppercase tracking-widest">
-                ID: {tenantRef}
+                MÜŞTERİ ID: {tenantRef}
               </span>
             </div>
-            <h2 className="text-[20px] font-semibold text-[#1D1D1F] tracking-tight">
-              {navItems.find(n => n.id === currentPage)?.label || 'Genel Bakış'}
-            </h2>
           </div>
 
           <div className="flex items-center gap-6">
