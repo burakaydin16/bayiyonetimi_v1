@@ -15,11 +15,11 @@ export const api = {
 
     if (!response.ok) {
       let errorMessage = 'Bir hata oluştu';
+      const clonedResponse = response.clone();
       try {
-        const errorData = await response.json();
+        const errorData = await clonedResponse.json();
         errorMessage = errorData.error || errorData.message || errorMessage;
       } catch (e) {
-        // If not JSON, try to get text
         errorMessage = await response.text() || errorMessage;
       }
       throw new Error(errorMessage);
@@ -40,8 +40,9 @@ export const api = {
 
     if (!response.ok) {
       let errorMessage = 'Bir hata oluştu';
+      const clonedResponse = response.clone();
       try {
-        const errorData = await response.json();
+        const errorData = await clonedResponse.json();
         errorMessage = errorData.error || errorData.message || errorMessage;
       } catch (e) {
         errorMessage = await response.text() || errorMessage;
@@ -65,8 +66,9 @@ export const api = {
 
     if (!response.ok) {
       let errorMessage = 'Bir hata oluştu';
+      const clonedResponse = response.clone();
       try {
-        const errorData = await response.json();
+        const errorData = await clonedResponse.json();
         errorMessage = errorData.error || errorData.message || errorMessage;
       } catch (e) {
         errorMessage = await response.text() || errorMessage;
@@ -89,8 +91,9 @@ export const api = {
 
     if (!response.ok) {
       let errorMessage = 'Bir hata oluştu';
+      const clonedResponse = response.clone();
       try {
-        const errorData = await response.json();
+        const errorData = await clonedResponse.json();
         errorMessage = errorData.error || errorData.message || errorMessage;
       } catch (e) {
         errorMessage = await response.text() || errorMessage;
@@ -98,7 +101,6 @@ export const api = {
       throw new Error(errorMessage);
     }
 
-    // 204 No Content responses have no body
     if (response.status === 204) return null;
     return response.json();
   }
