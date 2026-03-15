@@ -46,7 +46,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         {/* Left: Brand & Desktop Nav */}
         <div className="flex items-center gap-8 lg:gap-12">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-20 rounded-xl flex items-center justify-center overflow-hidden">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
               ) : (
