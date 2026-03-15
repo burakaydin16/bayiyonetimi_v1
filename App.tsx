@@ -18,28 +18,52 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const init = async () => {
-      // Check for impersonation token in URL
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      const tRef = params.get('tenant_ref');
-      const tName = params.get('tenant_name');
-      const uData = params.get('user');
-      const lUrl = params.get('logo_url');
+      // 1. URL Parametrelerini Her İhtimale Karşı (Query ve Hash) Yakala
+      const getParam = (name: string) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        let val = urlParams.get(name);
+        if (!val && window.location.hash.includes('?')) {
+          const hashParams = new URLSearchParams(window.location.hash.split('?')[1]);
+          val = hashParams.get(name);
+        }
+        return val;
+      };
+
+      const token = getParam('token');
+      const tRef = getParam('tenant_ref');
+      const tName = getParam('tenant_name');
+      const uData = getParam('user');
+      const lUrl = getParam('logo_url');
+
+      console.log("LOGIN_DEBUG: Params found - Token:", !!token, "Ref:", tRef, "Name:", tName);
 
       if (token && tRef) {
         try {
+          let parsedUser = null;
+          if (uData) {
+            try {
+              // Decode and parse only once
+              const decoded = decodeURIComponent(uData);
+              parsedUser = decoded.startsWith('{') ? JSON.parse(decoded) : decoded;
+            } catch (e) {
+              parsedUser = uData;
+            }
+          }
+
           authService.externalLogin({
             token,
             tenant_ref: tRef,
             tenant_name: tName || '',
-            user: uData ? JSON.parse(uData) : null,
+            user: parsedUser,
             logo_url: lUrl || undefined
           });
-          // Clear URL params
+
+          // URL'yi temizle ve Dashboard'a geç
           window.history.replaceState({}, document.title, "/");
           setIsAuthenticated(true);
-        } catch (e) {
-          console.error("External login error:", e);
+          console.log("LOGIN_DEBUG: External session initialized successfully.");
+        } catch (err) {
+          console.error("LOGIN_DEBUG: Error initializing external session:", err);
         }
       } else {
         setIsAuthenticated(authService.isAuthenticated());
