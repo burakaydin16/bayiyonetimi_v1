@@ -354,51 +354,56 @@ export const Settings: React.FC = () => {
 
             {isUserModalOpen && (
                 <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl p-8 w-full max-w-lg space-y-6 shadow-2xl scale-in-center">
-                        <div className="flex justify-between items-center">
+                    <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
+                        {/* Fixed Header */}
+                        <div className="flex justify-between items-center p-8 border-b shrink-0">
                             <h3 className="text-xl font-bold text-gray-900">{editingUser ? 'Kullanıcı Düzenle' : 'Yeni Kullanıcı'}</h3>
                             <button onClick={() => setIsUserModalOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors">✕</button>
                         </div>
 
-                        <div className="space-y-4">
-                            {!editingUser ? (
-                                <>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Mail size={14} className="text-gray-400" /> E-Posta</label>
-                                        <input type="email" placeholder="ornek@firma.com" className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-water-500" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} />
+                        {/* Scrollable Body */}
+                        <div className="p-8 overflow-y-auto space-y-6 custom-scrollbar">
+                            <div className="space-y-4">
+                                {!editingUser ? (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Mail size={14} className="text-gray-400" /> E-Posta</label>
+                                            <input type="email" placeholder="ornek@firma.com" className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-water-500" value={newUser.email} onChange={e => setNewUser({ ...newUser, email: e.target.value })} />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Lock size={14} className="text-gray-400" /> Şifre Belirleyin</label>
+                                            <input type="password" placeholder="••••••••" className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-water-500" value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                        <p className="text-sm font-bold text-gray-900">{editingUser.email}</p>
+                                        <p className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Giriş bilgileri değiştirilemez</p>
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Lock size={14} className="text-gray-400" /> Şifre Belirleyin</label>
-                                        <input type="password" placeholder="••••••••" className="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-water-500" value={newUser.password} onChange={e => setNewUser({ ...newUser, password: e.target.value })} />
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                                    <p className="text-sm font-bold text-gray-900">{editingUser.email}</p>
-                                    <p className="text-[10px] text-gray-500 mt-1 uppercase font-bold">Giriş bilgileri değiştirilemez</p>
-                                </div>
-                            )}
+                                )}
 
-                            <div>
-                                <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Shield size={14} className="text-gray-400" /> Yetki Tanımları</label>
-                                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                                    {ALL_PERMISSIONS.map(p => {
-                                        const currentPerms = (editingUser ? editingUser.permissions : newUser.permissions) || '';
-                                        const isChecked = currentPerms === '*' || currentPerms.split(',').includes(p.id);
-                                        return (
-                                            <label key={p.id} className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-water-50 border-water-200 text-water-700' : 'bg-white border-gray-100 text-gray-600 hover:border-gray-200'}`}>
-                                                <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-water-600 focus:ring-water-500" checked={isChecked} disabled={currentPerms === '*'} onChange={() => togglePermission(p.id, currentPerms)} />
-                                                <span className="text-xs font-bold">{p.label}</span>
-                                            </label>
-                                        );
-                                    })}
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1.5 flex items-center gap-2"><Shield size={14} className="text-gray-400" /> Yetki Tanımları</label>
+                                    <div className="grid grid-cols-1 gap-2">
+                                        {ALL_PERMISSIONS.map(p => {
+                                            const currentPerms = (editingUser ? editingUser.permissions : newUser.permissions) || '';
+                                            const isChecked = currentPerms === '*' || currentPerms.split(',').includes(p.id);
+                                            return (
+                                                <label key={p.id} className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-water-50 border-water-200 text-water-700' : 'bg-white border-gray-100 text-gray-600 hover:border-gray-200'}`}>
+                                                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-water-600 focus:ring-water-500" checked={isChecked} disabled={currentPerms === '*' || (editingUser?.role === 'Admin' && p.id === 'settings')} onChange={() => togglePermission(p.id, currentPerms)} />
+                                                    <span className="text-xs font-bold">{p.label}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex gap-3 pt-4">
-                            <Button variant="ghost" onClick={() => setIsUserModalOpen(false)} className="flex-1 order-1">Vazgeç</Button>
-                            <Button onClick={handleSaveUser} disabled={userActionLoading} className="flex-1 order-2 bg-slate-900 text-white shadow-lg shadow-slate-200">
+                        {/* Fixed Footer */}
+                        <div className="flex gap-3 p-8 border-t shrink-0 bg-gray-50/50">
+                            <Button variant="ghost" onClick={() => setIsUserModalOpen(false)} className="flex-1">Vazgeç</Button>
+                            <Button onClick={handleSaveUser} disabled={userActionLoading} className="flex-1 bg-slate-900 text-white shadow-lg shadow-slate-200">
                                 {userActionLoading ? 'İşleniyor...' : 'Kaydet'}
                             </Button>
                         </div>
