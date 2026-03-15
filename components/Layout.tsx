@@ -55,9 +55,18 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
         </nav>
 
         <div className="p-4 border-t border-slate-800">
-          <div className="bg-slate-800 rounded-lg p-3">
-            <p className="text-xs text-slate-400">Aktif Bayi</p>
-            <p className="text-sm font-semibold truncate">{tenantName || 'Demo Distribütör'}</p>
+          <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-water-400 uppercase tracking-wider">MÜŞTERİ BİLGİSİ</span>
+              <p className="text-sm font-bold text-white leading-tight truncate">
+                {localStorage.getItem('tenantName') || 'Firma Adı'}
+              </p>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="px-2 py-0.5 rounded bg-slate-700 text-[10px] font-mono font-bold text-slate-300">
+                  ID: {localStorage.getItem('tenantRef') || '--'}
+                </span>
+              </div>
+            </div>
             <button
               onClick={onLogout}
               className="mt-2 w-full text-xs bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white py-1.5 rounded transition-all font-medium"
