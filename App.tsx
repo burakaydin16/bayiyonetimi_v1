@@ -5,7 +5,6 @@ import { Inventory } from './pages/Inventory';
 import { Customers } from './pages/Customers';
 import { Transactions } from './pages/Transactions';
 import { Reports } from './pages/Reports';
-import { Users } from './pages/Users';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { Settings } from './pages/Settings';
@@ -51,7 +50,6 @@ const App: React.FC = () => {
       case 'customers': return <Customers />;
       case 'transactions': return <Transactions />;
       case 'reports': return <Reports />;
-      case 'users': return <Users />;
       case 'settings': return <Settings />;
       default: return <Dashboard onNavigate={setPage} />;
     }
