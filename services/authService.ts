@@ -8,8 +8,8 @@ export const authService = {
         const data = await api.post('/auth/login', { tenant_ref: tenantRef, email, password });
         if (data.token) {
             localStorage.setItem('token', data.token);
-            localStorage.setItem('tenantRef', data.tenantRef || tenantRef);
-            localStorage.setItem('tenantName', data.tenantName || '');
+            localStorage.setItem('tenantRef', data.tenant_ref || tenantRef);
+            localStorage.setItem('tenantName', data.tenant_name || '');
             if (data.user) {
                 localStorage.setItem('user', JSON.stringify(data.user));
             }
