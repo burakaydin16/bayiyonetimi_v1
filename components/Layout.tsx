@@ -42,7 +42,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
   return (
     <div className="min-h-screen bg-[#FBFBFE] flex flex-col font-sans text-[#1D1D1F]">
       {/* Universal Top Navigation */}
-      <header className="h-20 bg-white border-b border-[#E5E5E7] sticky top-0 z-50 px-6 md:px-10 flex items-center justify-between shadow-sm">
+      <header className="h-20 bg-[#F5F5F7] border-b border-[#E5E5E7] sticky top-0 z-50 px-6 md:px-10 flex items-center justify-between shadow-sm">
         {/* Left: Brand & Desktop Nav */}
         <div className="flex items-center gap-8 lg:gap-12">
           <div className="flex items-center gap-3">
