@@ -1,34 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, ChevronLeft, ChevronRight, LogOut, User as UserIcon, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, LogOut } from 'lucide-react';
 import { authService } from '../services/authService';
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentPage: string;
-  onNavigate: (page: string) => void;
   onLogout: () => void;
-  tenantName: string;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigate, onLogout, tenantName: propTenantName }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const user = authService.getUser();
   const isAdmin = user?.role === 'Admin' || user?.permissions === '*';
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'inventory', label: 'Envanter', icon: Package },
-    { id: 'customers', label: 'Cari Hesaplar', icon: Users },
-    { id: 'transactions', label: 'İşlemler', icon: ArrowRightLeft },
-    { id: 'reports', label: 'Raporlar', icon: PieChart },
+    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/inventory', label: 'Envanter', icon: Package },
+    { path: '/customers', label: 'Cari Hesaplar', icon: Users },
+    { path: '/transactions', label: 'İşlemler', icon: ArrowRightLeft },
+    { path: '/reports', label: 'Raporlar', icon: PieChart },
   ];
 
   const tenantName = localStorage.getItem('tenantName') || 'Firma';
   const tenantRef = localStorage.getItem('tenantRef') || '--';
   const logoUrl = localStorage.getItem('logoUrl');
   const userInitial = user?.email?.charAt(0).toUpperCase() || 'U';
+
+  const isPathActive = (path: string) => {
+    if (path === '/' && location.pathname !== '/') return false;
+    return location.pathname.startsWith(path);
+  };
 
   useEffect(() => {
     if (logoUrl) {
@@ -45,7 +50,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
       <header className="h-20 bg-[#F5F5F7] border-b border-[#E5E5E7] sticky top-0 z-50 px-6 md:px-10 flex items-center justify-between shadow-sm">
         {/* Left: Brand & Desktop Nav */}
         <div className="flex items-center gap-8 lg:gap-12">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="w-20 h-20 rounded-xl flex items-center justify-center overflow-hidden">
               {logoUrl ? (
                 <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
@@ -59,23 +64,26 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
               <h1 className="font-bold text-[17px] tracking-tight leading-none mb-1">{tenantName}</h1>
               <span className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest">ID: {tenantRef}</span>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation Items */}
           <nav className="hidden lg:flex items-center gap-1 bg-gray-50/50 p-1 rounded-2xl border border-gray-100">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all duration-200 text-[14px] font-semibold ${currentPage === item.id
-                  ? 'bg-white text-[#0071E3] shadow-sm ring-1 ring-black/5'
-                  : 'text-[#86868B] hover:text-[#1D1D1F] hover:bg-white/50'
-                  }`}
-              >
-                <item.icon size={18} strokeWidth={currentPage === item.id ? 2.5 : 2} />
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const active = isPathActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl transition-all duration-200 text-[14px] font-semibold ${active
+                    ? 'bg-white text-[#0071E3] shadow-sm ring-1 ring-black/5'
+                    : 'text-[#86868B] hover:text-[#1D1D1F] hover:bg-white/50'
+                    }`}
+                >
+                  <item.icon size={18} strokeWidth={active ? 2.5 : 2} />
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -109,7 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
 
                   <div className="p-1.5">
                     <button
-                      onClick={() => { onNavigate('settings'); setIsProfileOpen(false); }}
+                      onClick={() => { navigate('/settings'); setIsProfileOpen(false); }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-[#1D1D1F] hover:bg-[#F5F5F7] rounded-xl transition-all text-[14px] font-semibold"
                     >
                       <Settings size={18} className="text-[#86868B]" />
@@ -143,16 +151,20 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
       {isMobileMenuOpen && (
         <div className="lg:hidden fixed inset-0 top-20 bg-white z-40 p-6 animate-in slide-in-from-top duration-300">
           <nav className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => { onNavigate(item.id); setIsMobileMenuOpen(false); }}
-                className={`flex items-center gap-4 p-4 rounded-xl text-[17px] font-bold transition-all ${currentPage === item.id ? 'bg-[#F5F5F7] text-[#0071E3]' : 'text-[#86868B] hover:bg-gray-50'}`}
-              >
-                <item.icon size={22} />
-                {item.label}
-              </button>
-            ))}
+            {navItems.map((item) => {
+              const active = isPathActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-4 p-4 rounded-xl text-[17px] font-bold transition-all ${active ? 'bg-[#F5F5F7] text-[#0071E3]' : 'text-[#86868B] hover:bg-gray-50'}`}
+                >
+                  <item.icon size={22} />
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Inventory } from './pages/Inventory';
@@ -13,7 +14,6 @@ import { authService } from './services/authService';
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
   const [authView, setAuthView] = useState<'login' | 'register'>('login');
-  const [page, setPage] = useState('dashboard');
   const [isInit, setIsInit] = useState(false);
 
   useEffect(() => {
@@ -35,14 +35,11 @@ const App: React.FC = () => {
       const uData = getParam('user');
       const lUrl = getParam('logo_url');
 
-      console.log("LOGIN_DEBUG: Params found - Token:", !!token, "Ref:", tRef, "Name:", tName);
-
       if (token && tRef) {
         try {
           let parsedUser = null;
           if (uData) {
             try {
-              // Decode and parse only once
               const decoded = decodeURIComponent(uData);
               parsedUser = decoded.startsWith('{') ? JSON.parse(decoded) : decoded;
             } catch (e) {
@@ -58,10 +55,9 @@ const App: React.FC = () => {
             logo_url: lUrl || undefined
           });
 
-          // URL'yi temizle ve Dashboard'a geç
+          // URL'yi temizle
           window.history.replaceState({}, document.title, "/");
           setIsAuthenticated(true);
-          console.log("LOGIN_DEBUG: External session initialized successfully.");
         } catch (err) {
           console.error("LOGIN_DEBUG: Error initializing external session:", err);
         }
@@ -81,50 +77,41 @@ const App: React.FC = () => {
   };
 
   if (!isInit) {
-    return <div className="min-h-screen bg-[#FBFBFE] flex items-center justify-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0071E3]"></div>
-    </div>;
+    return (
+      <div className="min-h-screen bg-[#FBFBFE] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0071E3]"></div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    if (authView === 'login') {
-      return (
-        <Login
-          onLoginSuccess={() => setIsAuthenticated(true)}
-          onSwitchToRegister={() => setAuthView('register')}
-        />
-      );
-    } else {
-      return (
-        <Register
-          onRegisterSuccess={() => setAuthView('login')}
-          onSwitchToLogin={() => setAuthView('login')}
-        />
-      );
-    }
+    return authView === 'login' ? (
+      <Login
+        onLoginSuccess={() => setIsAuthenticated(true)}
+        onSwitchToRegister={() => setAuthView('register')}
+      />
+    ) : (
+      <Register
+        onRegisterSuccess={() => setAuthView('login')}
+        onSwitchToLogin={() => setAuthView('login')}
+      />
+    );
   }
 
-  const renderPage = () => {
-    switch (page) {
-      case 'dashboard': return <Dashboard onNavigate={setPage} />;
-      case 'inventory': return <Inventory />;
-      case 'customers': return <Customers />;
-      case 'transactions': return <Transactions />;
-      case 'reports': return <Reports />;
-      case 'settings': return <Settings />;
-      default: return <Dashboard onNavigate={setPage} />;
-    }
-  };
-
   return (
-    <Layout
-      currentPage={page}
-      onNavigate={setPage}
-      onLogout={handleLogout}
-      tenantName={localStorage.getItem('tenantRef') || ''}
-    >
-      {renderPage()}
-    </Layout>
+    <BrowserRouter>
+      <Layout onLogout={handleLogout}>
+        <Routes>
+          <Route path="/" element={<Dashboard onNavigate={() => { }} />} />
+          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 };
 
