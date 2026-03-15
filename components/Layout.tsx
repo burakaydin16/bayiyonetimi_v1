@@ -144,18 +144,6 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentPage, onNavigat
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto bg-[#FBFBFE]">
         <div className="p-6 md:p-10 max-w-[1440px] mx-auto animate-in fade-in duration-700">
-          {/* Page Heading Section */}
-          <div className="mb-8 flex items-end justify-between border-b border-[#F5F5F7] pb-6">
-            <h2 className="text-[32px] font-bold text-[#1D1D1F] tracking-tight leading-none">
-              {navItems.find(n => n.id === currentPage)?.label || 'Genel Bakış'}
-            </h2>
-            <div className="hidden md:flex items-center gap-2 text-[13px] text-[#86868B] font-medium">
-              <span>Ana Sayfa</span>
-              <span>/</span>
-              <span className="text-[#1D1D1F]">{navItems.find(n => n.id === currentPage)?.label}</span>
-            </div>
-          </div>
-
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-1000">
             {children}
           </div>
