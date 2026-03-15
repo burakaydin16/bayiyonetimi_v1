@@ -19,22 +19,27 @@ const App: React.FC = () => {
     // Check for impersonation token in URL
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    const tRef = params.get('tenantRef');
-    const tName = params.get('tenantName');
+    const tRef = params.get('tenant_ref');
+    const tName = params.get('tenant_name');
     const uData = params.get('user');
-    const lUrl = params.get('logoUrl');
+    const lUrl = params.get('logo_url');
 
     if (token && tRef) {
-      authService.externalLogin({
-        token,
-        tenant_ref: tRef,
-        tenant_name: tName || '',
-        user: uData ? JSON.parse(decodeURIComponent(uData)) : null,
-        logo_url: lUrl || undefined
-      });
-      // Clear URL params
-      window.history.replaceState({}, document.title, "/");
-      setIsAuthenticated(true);
+      try {
+        authService.externalLogin({
+          token,
+          tenant_ref: tRef,
+          tenant_name: tName || '',
+          user: uData ? JSON.parse(decodeURIComponent(uData)) : null,
+          logo_url: lUrl || undefined
+        });
+        // Clear URL params
+        window.history.replaceState({}, document.title, "/");
+        setIsAuthenticated(true);
+      } catch (e) {
+        console.error("External login error:", e);
+        setIsAuthenticated(authService.isAuthenticated());
+      }
     } else {
       setIsAuthenticated(authService.isAuthenticated());
     }
