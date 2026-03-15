@@ -20,6 +20,21 @@ export const authService = {
         return data;
     },
 
+    externalLogin: (data: { token: string, tenant_name: string, tenant_ref: string, user: any, logo_url?: string }) => {
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('tenantRef', data.tenant_ref);
+            localStorage.setItem('tenantName', data.tenant_name);
+            if (data.logo_url) {
+                localStorage.setItem('logoUrl', data.logo_url);
+            }
+            if (data.user) {
+                const userStr = typeof data.user === 'string' ? data.user : JSON.stringify(data.user);
+                localStorage.setItem('user', userStr);
+            }
+        }
+    },
+
     registerTenant: async (name: string, username: string, email: string, password: string) => {
         return await api.post('/auth/register-tenant', { name, username, email, password });
     },

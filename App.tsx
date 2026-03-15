@@ -16,7 +16,28 @@ const App: React.FC = () => {
   const [page, setPage] = useState('dashboard');
 
   useEffect(() => {
-    setIsAuthenticated(authService.isAuthenticated());
+    // Check for impersonation token in URL
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const tRef = params.get('tenantRef');
+    const tName = params.get('tenantName');
+    const uData = params.get('user');
+    const lUrl = params.get('logoUrl');
+
+    if (token && tRef) {
+      authService.externalLogin({
+        token,
+        tenant_ref: tRef,
+        tenant_name: tName || '',
+        user: uData ? JSON.parse(decodeURIComponent(uData)) : null,
+        logo_url: lUrl || undefined
+      });
+      // Clear URL params
+      window.history.replaceState({}, document.title, "/");
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(authService.isAuthenticated());
+    }
   }, []);
 
   const handleLogout = () => {
