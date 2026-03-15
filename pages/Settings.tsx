@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { DataService } from '../services/dataService';
 import { Button } from '../components/ui/Button';
-import { Shield, KeyRound, CheckCircle, Users as UsersIcon, Plus, Trash2, Mail, Lock, Settings as SettingsIcon } from 'lucide-react';
+import { Shield, KeyRound, CheckCircle, Users as UsersIcon, Plus, Trash2, Mail, Lock, Settings as SettingsIcon, Image as ImageIcon, Upload } from 'lucide-react';
 
 interface User {
     id: string;
@@ -23,7 +23,7 @@ const ALL_PERMISSIONS = [
 export const Settings: React.FC = () => {
     const user = authService.getUser();
     const isAdmin = user?.role === 'Admin' || user?.permissions === '*';
-    const [activeTab, setActiveTab] = useState<'profile' | 'users'>(isAdmin ? 'users' : 'profile');
+    const [activeTab, setActiveTab] = useState<'profile' | 'users' | 'branding'>(isAdmin ? 'users' : 'profile');
 
     // Password State
     const [oldPassword, setOldPassword] = useState('');
@@ -39,6 +39,10 @@ export const Settings: React.FC = () => {
     const [userActionLoading, setUserActionLoading] = useState(false);
     const [editingUser, setEditingUser] = useState<Partial<User> | null>(null);
     const [newUser, setNewUser] = useState({ email: '', password: '', role: 'User', permissions: '' });
+
+    // Logo State
+    const [logoLoading, setLogoLoading] = useState(false);
+    const [currentLogo, setCurrentLogo] = useState(localStorage.getItem('logoUrl') || '');
 
     useEffect(() => {
         if (isAdmin && activeTab === 'users') {
@@ -118,6 +122,33 @@ export const Settings: React.FC = () => {
         else setNewUser({ ...newUser, permissions: newPermString });
     };
 
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (file.size > 500 * 1024) { // 500KB limit
+            alert("Logo dosyası 500KB'dan büyük olamaz.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64String = reader.result as string;
+            try {
+                setLogoLoading(true);
+                await authService.updateLogo(base64String);
+                setCurrentLogo(base64String);
+                // Trigger a re-render or notification if needed
+                window.location.reload(); // Simple way to refresh logo in layout
+            } catch (err: any) {
+                alert("Logo yüklenirken hata oluştu.");
+            } finally {
+                setLogoLoading(false);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -145,6 +176,14 @@ export const Settings: React.FC = () => {
                         >
                             Hesap Güvenliği
                         </button>
+                        {isAdmin && (
+                            <button
+                                onClick={() => setActiveTab('branding')}
+                                className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${activeTab === 'branding' ? 'bg-white text-slate-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            >
+                                Firma Logosu
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
@@ -220,6 +259,50 @@ export const Settings: React.FC = () => {
                                 </Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            ) : activeTab === 'branding' ? (
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden max-w-2xl">
+                    <div className="p-6 border-b border-gray-100 flex items-center gap-2 bg-gray-50/50">
+                        <ImageIcon className="w-5 h-5 text-water-600" />
+                        <h2 className="text-lg font-bold text-gray-800">Firma Logosu</h2>
+                    </div>
+
+                    <div className="p-8 space-y-8 text-center">
+                        <div className="mx-auto w-40 h-40 bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl flex items-center justify-center overflow-hidden group relative">
+                            {currentLogo ? (
+                                <img src={currentLogo} alt="Mevcut Logo" className="w-full h-full object-contain p-2" />
+                            ) : (
+                                <ImageIcon className="w-12 h-12 text-gray-300" />
+                            )}
+
+                            {logoLoading && (
+                                <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
+                                    <div className="w-8 h-8 border-4 border-water-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="max-w-xs mx-auto space-y-4">
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900">Logo Yükleyin</h3>
+                                <p className="text-xs text-gray-500 mt-1">Önerilen boyut: 512x512px. Maksimum 500KB.</p>
+                            </div>
+
+                            <div className="relative">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleLogoUpload}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    disabled={logoLoading}
+                                />
+                                <Button className="w-full bg-slate-900 text-white flex items-center justify-center gap-2">
+                                    <Upload size={18} />
+                                    {logoLoading ? 'Yükleniyor...' : (currentLogo ? 'Logoyu Değiştir' : 'Dosya Seç')}
+                                </Button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (

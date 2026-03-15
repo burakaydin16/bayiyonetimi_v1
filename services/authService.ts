@@ -10,6 +10,9 @@ export const authService = {
             localStorage.setItem('token', data.token);
             localStorage.setItem('tenantRef', data.tenant_ref || tenantRef);
             localStorage.setItem('tenantName', data.tenant_name || '');
+            if (data.logo_url) {
+                localStorage.setItem('logoUrl', data.logo_url);
+            }
             if (data.user) {
                 localStorage.setItem('user', JSON.stringify(data.user));
             }
@@ -26,6 +29,7 @@ export const authService = {
         localStorage.removeItem('tenantRef');
         localStorage.removeItem('tenantName');
         localStorage.removeItem('user');
+        localStorage.removeItem('logoUrl');
     },
 
     isAuthenticated: () => {
@@ -48,6 +52,14 @@ export const authService = {
             old_password: oldPassword,
             new_password: newPassword
         });
+    },
+
+    updateLogo: async (logoUrl: string) => {
+        const data = await api.post('/auth/update-logo', { logo_url: logoUrl });
+        if (data.logo_url) {
+            localStorage.setItem('logoUrl', data.logo_url);
+        }
+        return data;
     },
 
     superAdminLogin: async (username: string, password: string) => {
