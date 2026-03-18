@@ -312,33 +312,34 @@ export const Dashboard: React.FC = () => {
             {/* Transaction Detail Modal */}
             {isDetailModalOpen && selectedTransaction && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setIsDetailModalOpen(false)}></div>
-                    <div className="relative bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-                        {/* Modal Header */}
-                        <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setIsDetailModalOpen(false)}></div>
+                    <div className="relative bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
+                        {/* Modal Header - More Compact */}
+                        <div className="px-6 py-5 border-b border-slate-50 flex justify-between items-center bg-white">
                             <div>
-                                <h3 className="text-2xl font-black text-slate-900 tracking-tight">İşlem Detayı</h3>
-                                <p className="text-sm font-bold text-slate-400 mt-1 uppercase tracking-widest">
-                                    {new Date(selectedTransaction.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                <h3 className="text-lg font-black text-slate-900 tracking-tight">İşlem Detayı</h3>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+                                    {new Date(selectedTransaction.date).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                                 </p>
                             </div>
                             <button
                                 onClick={() => setIsDetailModalOpen(false)}
-                                className="p-3 bg-white text-slate-400 hover:text-slate-900 rounded-2xl shadow-sm border border-slate-100 transition-colors"
+                                className="p-2 text-slate-400 hover:text-slate-900 rounded-xl hover:bg-slate-50 transition-all"
                             >
-                                <X size={24} />
+                                <X size={20} />
                             </button>
                         </div>
 
                         {/* Modal Body */}
-                        <div className="p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
-                            <div className="flex items-center gap-4 mb-8 p-6 bg-slate-900 text-white rounded-[32px] shadow-lg shadow-slate-200">
-                                <div className={`p-4 rounded-2xl ${selectedTransaction.customer_id ? 'bg-blue-500' : 'bg-purple-500'}`}>
-                                    {selectedTransaction.customer_id ? <Users size={28} /> : <Package size={28} />}
+                        <div className="p-6 max-h-[50vh] overflow-y-auto custom-scrollbar space-y-5">
+                            {/* Compact Customer Info */}
+                            <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <div className={`p-2.5 rounded-xl ${selectedTransaction.customer_id ? 'bg-blue-600 text-white shadow-md shadow-blue-100' : 'bg-slate-800 text-white shadow-md shadow-slate-200'}`}>
+                                    {selectedTransaction.customer_id ? <Users size={18} /> : <Package size={18} />}
                                 </div>
                                 <div>
-                                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">İşlem Yapılan Cari</p>
-                                    <p className="text-xl font-black">
+                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">İşlem Sahibi</p>
+                                    <p className="font-black text-slate-900 text-sm">
                                         {selectedTransaction.customer_id
                                             ? (stats.customers.find(c => c.id === selectedTransaction.customer_id)?.name || 'Bilinmeyen Müşteri')
                                             : 'Fabrika Stok Girişi'}
@@ -346,28 +347,28 @@ export const Dashboard: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs px-2">İşlem Kalemleri</h4>
-                                <div className="space-y-3">
+                            <div className="space-y-3">
+                                <h4 className="font-bold text-slate-400 uppercase tracking-widest text-[9px] px-1">İşlem İçeriği</h4>
+                                <div className="space-y-2">
                                     {selectedTransaction.items.map((item, idx) => {
                                         const product = stats.stock.find(p => p.id === item.product_id);
                                         return (
-                                            <div key={idx} className="flex items-center justify-between p-5 bg-slate-50 rounded-2xl border border-slate-100 group hover:bg-white hover:border-slate-200 transition-colors">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`p-2.5 rounded-xl ${item.item_type === 'Gonderilen' ? 'bg-emerald-50 text-emerald-600' : item.item_type === 'IadeAlinan' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
-                                                        {item.item_type === 'Gonderilen' ? <ArrowUpRight size={18} /> : item.item_type === 'IadeAlinan' ? <ArrowDownLeft size={18} /> : <CheckCircle2 size={18} />}
+                                            <div key={idx} className="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-100 hover:border-slate-200 transition-colors">
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`p-1.5 rounded-lg ${item.item_type === 'Gonderilen' ? 'bg-emerald-50 text-emerald-600' : item.item_type === 'IadeAlinan' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                        {item.item_type === 'Gonderilen' ? <ArrowUpRight size={14} /> : item.item_type === 'IadeAlinan' ? <ArrowDownLeft size={14} /> : <CheckCircle2 size={14} />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-bold text-slate-900">{product?.name || 'Bilinmeyen Ürün'}</p>
-                                                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight">
-                                                            {item.item_type === 'Gonderilen' ? 'SATIŞ / ÇIKIŞ' : item.item_type === 'IadeAlinan' ? 'İADE / GİRİŞ' : 'STOK GİRİŞİ'}
+                                                        <p className="font-bold text-slate-900 text-[13px]">{product?.name || 'Bilinmeyen Ürün'}</p>
+                                                        <p className="text-[9px] font-bold text-slate-400 uppercase">
+                                                            {item.item_type === 'Gonderilen' ? 'ÇIKIŞ' : item.item_type === 'IadeAlinan' ? 'İADE' : 'GİRİŞ'}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <p className="font-black text-slate-900">{item.quantity} Adet</p>
+                                                    <p className="font-black text-slate-900 text-[13px]">{item.quantity} Adet</p>
                                                     {item.unit_price > 0 && (
-                                                        <p className="text-[11px] font-bold text-slate-400">₺{item.unit_price.toLocaleString()} / Birim</p>
+                                                        <p className="text-[9px] font-bold text-slate-400">₺{item.unit_price.toLocaleString()}</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -377,13 +378,16 @@ export const Dashboard: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Modal Footer */}
-                        <div className="p-8 border-t border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                        {/* Modal Footer - Compact */}
+                        <div className="px-6 py-5 border-t border-slate-50 bg-slate-50/30 flex justify-between items-center">
                             <div>
-                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">Toplam İşlem Tutarı</p>
-                                <p className="text-3xl font-black text-slate-900">₺{selectedTransaction.total_amount.toLocaleString()}</p>
+                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Toplam Tutar</p>
+                                <p className="text-xl font-black text-slate-900">₺{selectedTransaction.total_amount.toLocaleString()}</p>
                             </div>
-                            <Button onClick={() => setIsDetailModalOpen(false)} className="bg-slate-900 text-white px-10 rounded-2xl h-14 font-black shadow-lg shadow-slate-200 hover:bg-black transition-all">
+                            <Button
+                                onClick={() => setIsDetailModalOpen(false)}
+                                className="bg-slate-900 text-white px-6 py-2 rounded-xl text-xs font-bold shadow-lg hover:bg-black transition-all"
+                            >
                                 Kapat
                             </Button>
                         </div>
