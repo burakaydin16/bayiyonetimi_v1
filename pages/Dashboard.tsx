@@ -312,7 +312,7 @@ export const Dashboard: React.FC = () => {
             {/* Transaction Detail Modal */}
             {isDetailModalOpen && selectedTransaction && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-300" onClick={() => setIsDetailModalOpen(false)}></div>
+                    <div className="absolute inset-0 bg-slate-900/10 animate-in fade-in duration-300" onClick={() => setIsDetailModalOpen(false)}></div>
                     <div className="relative bg-white w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
                         {/* Modal Header - More Compact */}
                         <div className="px-6 py-5 border-b border-slate-50 flex justify-between items-center bg-white">
