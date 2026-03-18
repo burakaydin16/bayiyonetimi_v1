@@ -68,9 +68,9 @@ export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
                 </div>
               )}
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col min-w-[120px]">
               <h1 className="font-bold text-[17px] tracking-tight leading-none mb-1 text-slate-800">{tenantName}</h1>
-              <span className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest">ID: {tenantRef}</span>
+              <span className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest whitespace-nowrap">ID: {tenantRef}</span>
             </div>
           </Link>
 
