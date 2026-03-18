@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DataService } from '../services/dataService';
 import { Customer, Product } from '../types';
 import { Button } from '../components/ui/Button';
@@ -12,6 +13,7 @@ export const Customers: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newCustomer, setNewCustomer] = useState<Partial<Customer>>({ name: '', type: 'Bayi', phone: '', address: '', cash_balance: 0 });
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const loadData = async () => {
         const c = await DataService.getCustomers();
@@ -22,7 +24,12 @@ export const Customers: React.FC = () => {
 
     useEffect(() => {
         loadData();
-    }, []);
+
+        if (searchParams.get('action') === 'new') {
+            setIsModalOpen(true);
+            setSearchParams({}, { replace: true });
+        }
+    }, [searchParams]);
 
     const handleSave = async () => {
         if (!newCustomer.name) return;

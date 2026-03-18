@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DataService } from '../services/dataService';
 import { Customer, Product, Transaction, TransactionItem, ProductType } from '../types';
 import { Button } from '../components/ui/Button';
@@ -8,6 +9,7 @@ import { Plus, Trash, Save, Factory, User, ArrowRight, AlertCircle, CheckCircle 
 export const Transactions: React.FC = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [mode, setMode] = useState<'CustomerOp' | 'FactoryOp'>('CustomerOp');
 
@@ -22,9 +24,15 @@ export const Transactions: React.FC = () => {
             const p = await DataService.getProducts();
             setCustomers(c);
             setProducts(p);
+
+            const urlMode = searchParams.get('mode');
+            if (urlMode === 'FactoryOp' || urlMode === 'CustomerOp') {
+                setMode(urlMode as any);
+                setSearchParams({}, { replace: true });
+            }
         };
         load();
-    }, []);
+    }, [searchParams]);
 
     const addItem = () => {
         if (products.length === 0) return;

@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DataService } from '../services/dataService';
 import { Product, ProductType } from '../types';
 import { Button } from '../components/ui/Button';
@@ -9,6 +10,7 @@ export const Inventory: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [formData, setFormData] = useState<Partial<Product>>({
         name: '',
@@ -26,7 +28,13 @@ export const Inventory: React.FC = () => {
 
     useEffect(() => {
         loadProducts();
-    }, []);
+
+        if (searchParams.get('action') === 'new') {
+            openNew();
+            // Parametreyi temizle
+            setSearchParams({}, { replace: true });
+        }
+    }, [searchParams]);
 
     const handleSave = async () => {
         if (!formData.name) return;
@@ -131,7 +139,7 @@ export const Inventory: React.FC = () => {
                                             </td>
                                             <td className="p-4">
                                                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${product.type === ProductType.WATER ? 'bg-blue-50 text-blue-700' :
-                                                        product.type === ProductType.DEPOSIT ? 'bg-orange-50 text-orange-700' : 'bg-gray-100 text-gray-700'
+                                                    product.type === ProductType.DEPOSIT ? 'bg-orange-50 text-orange-700' : 'bg-gray-100 text-gray-700'
                                                     }`}>
                                                     {product.type === ProductType.WATER ? 'Su Ürünü' :
                                                         product.type === ProductType.DEPOSIT ? 'Depozito' : 'Diğer'}

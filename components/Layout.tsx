@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Package, ArrowRightLeft, PieChart, Droplets, Settings, LogOut, PlusCircle, ShoppingCart, Truck, UserPlus, PackagePlus, ChevronDown } from 'lucide-react';
 import { authService } from '../services/authService';
 
 interface LayoutProps {
@@ -10,6 +10,7 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +24,13 @@ export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
     { path: '/customers', label: 'Cari Hesaplar', icon: Users },
     { path: '/transactions', label: 'İşlemler', icon: ArrowRightLeft },
     { path: '/reports', label: 'Raporlar', icon: PieChart },
+  ];
+
+  const quickActions = [
+    { label: 'Satış Yap', icon: ShoppingCart, color: 'text-emerald-600', bg: 'bg-emerald-50', path: '/transactions?mode=CustomerOp' },
+    { label: 'Stok Girişi', icon: Truck, color: 'text-indigo-600', bg: 'bg-indigo-50', path: '/transactions?mode=FactoryOp' },
+    { label: 'Yeni Ürün', icon: PackagePlus, color: 'text-blue-600', bg: 'bg-blue-50', path: '/inventory?action=new' },
+    { label: 'Cari Ekle', icon: UserPlus, color: 'text-purple-600', bg: 'bg-purple-50', path: '/customers?action=new' },
   ];
 
   const tenantName = localStorage.getItem('tenantName') || 'Firma';
@@ -61,7 +69,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
               )}
             </div>
             <div className="flex flex-col">
-              <h1 className="font-bold text-[17px] tracking-tight leading-none mb-1">{tenantName}</h1>
+              <h1 className="font-bold text-[17px] tracking-tight leading-none mb-1 text-slate-800">{tenantName}</h1>
               <span className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest">ID: {tenantRef}</span>
             </div>
           </Link>
@@ -87,8 +95,46 @@ export const Layout: React.FC<LayoutProps> = ({ children, onLogout }) => {
           </nav>
         </div>
 
-        {/* Right: Profile & Actions */}
+        {/* Right: Actions & Profile */}
         <div className="flex items-center gap-4">
+          {/* Quick Actions Dropdown */}
+          <div className="relative hidden md:block">
+            <button
+              onClick={() => setIsQuickActionsOpen(!isQuickActionsOpen)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all hover:scale-105 active:scale-95"
+            >
+              <PlusCircle size={18} />
+              <span>Hızlı İşlemler</span>
+              <ChevronDown size={14} className={`transition-transform duration-200 ${isQuickActionsOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isQuickActionsOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setIsQuickActionsOpen(false)}></div>
+                <div className="absolute right-0 top-12 w-56 bg-white rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.12)] border border-[#E5E5E7] py-2 z-50 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="px-4 py-2 border-b border-[#F5F5F7] mb-1">
+                    <p className="text-[10px] font-bold text-[#86868B] uppercase tracking-widest">Kısayollar</p>
+                  </div>
+                  {quickActions.map((action, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        navigate(action.path);
+                        setIsQuickActionsOpen(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-[#1D1D1F] hover:bg-[#F5F5F7] transition-all text-[14px] font-semibold group"
+                    >
+                      <div className={`p-1.5 rounded-lg ${action.bg} ${action.color} group-hover:scale-110 transition-transform`}>
+                        <action.icon size={18} />
+                      </div>
+                      {action.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
           <div className="h-8 w-px bg-[#E5E5E7] hidden sm:block mx-1"></div>
 
           <div className="relative">
