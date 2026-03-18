@@ -92,8 +92,9 @@ export const Transactions: React.FC = () => {
 
     const totalMoney = items.reduce((acc, item) => {
         if (item.item_type === 'Gonderilen') {
-            const p = products.find(prod => prod.id === item.product_id);
-            if (p && p.type === ProductType.WATER) return acc + (item.quantity * item.unit_price);
+            return acc + (item.quantity * item.unit_price);
+        } else if (item.item_type === 'IadeAlinan') {
+            return acc - (item.quantity * item.unit_price);
         }
         return acc;
     }, 0);
@@ -211,7 +212,7 @@ export const Transactions: React.FC = () => {
                                             >
                                                 {products.map(p => (
                                                     <option key={p.id} value={p.id}>
-                                                        {p.name} {item.item_type === 'Gonderilen' && p.type === ProductType.WATER ? `(₺${p.price})` : ''}
+                                                        {p.name} {p.price > 0 ? `(₺${p.price})` : ''}
                                                     </option>
                                                 ))}
                                             </select>
