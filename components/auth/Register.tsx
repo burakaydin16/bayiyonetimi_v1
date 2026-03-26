@@ -40,13 +40,16 @@ export const Register: React.FC<RegisterProps> = ({ onRegisterSuccess, onSwitchT
                         <CheckCircle className="text-emerald-600 w-12 h-12" />
                     </div>
                     <h2 className="text-2xl font-extrabold text-gray-900 mb-3">Başvurunuz Alındı!</h2>
-                    <p className="text-gray-600 mb-6">
-                        Sistem yöneticisi hesabınızı onayladıktan sonra aşağıdaki <strong>Firma ID</strong> ve e-posta adresiniz ile giriş yapabilirsiniz.
-                    </p>
-                    <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
-                        <p className="text-sm font-bold text-blue-700 uppercase tracking-widest mb-2">Firma ID (Referans Kodu)</p>
-                        <p className="text-3xl font-black text-blue-900 tracking-wider">{successData.referenceCode}</p>
-                        <p className="text-xs text-blue-500 mt-2">Bu kodu kaybedetmeyin, giriş için gerekli!</p>
+                    <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-6 mb-6 text-left">
+                        <p className="text-gray-800 font-medium text-[15px] leading-relaxed">
+                            Üyeliğiniz şu an <strong className="text-orange-700">onay aşamasındadır</strong>.
+                        </p>
+                        <p className="text-gray-800 font-medium text-[15px] leading-relaxed mt-4">
+                            Hesabınız sistem yöneticisi tarafından onaylandıktan sonra, giriş yapabilmeniz için gereken <strong>Firma ID</strong> bilginiz ve diğer detaylar kayıt olduğunuz e-posta adresinize otomatik olarak iletilecektir.
+                        </p>
+                        <p className="text-orange-600 font-bold text-sm mt-4 text-center">
+                            Lütfen e-posta adresinizi kontrol etmeyi unutmayınız.
+                        </p>
                     </div>
                     <button
                         onClick={onSwitchToLogin}
