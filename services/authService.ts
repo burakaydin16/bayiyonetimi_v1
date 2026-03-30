@@ -42,6 +42,18 @@ export const authService = {
         return await api.post('/auth/register-tenant', { name, username, email, password });
     },
 
+    verifyEmail: async (token: string) => {
+        return await api.post(`/auth/verify-email?token=${encodeURIComponent(token)}`, {});
+    },
+
+    forgotPassword: async (email: string) => {
+        return await api.post('/auth/forgot-password', { email });
+    },
+
+    resetPassword: async (token: string, newPassword: string) => {
+        return await api.post('/auth/reset-password', { token, new_password: newPassword });
+    },
+
     logout: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('tenantRef');

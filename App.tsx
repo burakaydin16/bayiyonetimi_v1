@@ -9,15 +9,41 @@ import { Reports } from './pages/Reports';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
 import { Settings } from './pages/Settings';
+import { VerifyEmail } from './pages/VerifyEmail';
+import { ResetPassword } from './pages/ResetPassword';
 import { authService } from './services/authService';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authService.isAuthenticated());
   const [authView, setAuthView] = useState<'login' | 'register'>('login');
   const [isInit, setIsInit] = useState(false);
+  const [specialPage, setSpecialPage] = useState<{ type: 'verify-email' | 'reset-password', token: string } | null>(null);
 
   useEffect(() => {
     const init = async () => {
+      const path = window.location.pathname;
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Handle /verify-email?token=... links from email
+      if (path === '/verify-email') {
+        const token = urlParams.get('token');
+        if (token) {
+          setSpecialPage({ type: 'verify-email', token });
+          setIsInit(true);
+          return;
+        }
+      }
+
+      // Handle /reset-password?token=... links from email
+      if (path === '/reset-password') {
+        const token = urlParams.get('token');
+        if (token) {
+          setSpecialPage({ type: 'reset-password', token });
+          setIsInit(true);
+          return;
+        }
+      }
+
       // 1. URL Parametrelerini Her İhtimale Karşı (Query ve Hash) Yakala
       const getParam = (name: string) => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -82,6 +108,21 @@ const App: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0071E3]"></div>
       </div>
     );
+  }
+
+  // Handle special pages from email links (verify-email, reset-password)
+  if (specialPage) {
+    const goToLogin = () => {
+      setSpecialPage(null);
+      window.history.replaceState({}, document.title, '/');
+    };
+
+    if (specialPage.type === 'verify-email') {
+      return <VerifyEmail token={specialPage.token} onGoToLogin={goToLogin} />;
+    }
+    if (specialPage.type === 'reset-password') {
+      return <ResetPassword token={specialPage.token} onGoToLogin={goToLogin} />;
+    }
   }
 
   if (!isAuthenticated) {
